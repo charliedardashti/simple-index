@@ -60,15 +60,16 @@ public class DocumentServiceImpl implements DocumentService {
 
     private void addMissingId(List<Document> missingDocList, int prev, int next, String fromDate) {
         String msg;
+        String missingMsg = " missing !!";
         Document docNotFound = null;
         if (next - prev == 2) {
-            msg = fromDate;
+            msg = fromDate + missingMsg;
             docNotFound = new Document();
             docNotFound.setMessage(msg);
             missingDocList.add(docNotFound);
         } else {
             String toDate = Integer.toString(next - 1);
-            msg = fromDate + " to " + toDate;
+            msg = fromDate + " to " + toDate + missingMsg;
             docNotFound = new Document();
             docNotFound.setMessage(msg);
             missingDocList.add(docNotFound);

@@ -35,7 +35,8 @@
                 <td th:text="${document.invoiceNumber}"></td>
                 <td th:text="${document.invoiceDate}"></td>
                 <td th:text="${document.month}"></td>
-                <td th:text="${document.message}"></td>
+                <td th:style="|${document.message == 'yes' ? 'color: green;' : 'color: red;'}|"
+                    th:text="${document.message}"></td>
             </tr>
             </tbody>
         </table>
