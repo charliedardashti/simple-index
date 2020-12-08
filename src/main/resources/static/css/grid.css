@@ -1,0 +1,20 @@
+.validate_Date {
+    border-color: #dc3545;
+    background-repeat: no-repeat;
+    background-position: right calc(.375em + .1875rem) center;
+    background-size: calc(.75em + .375rem) calc(.75em + .375rem);
+}
+
+.label {
+    display: contents;
+    margin-bottom: .5rem;
+}
+.validate_input {
+    display: none;
+}
+.invalidate_input {
+    width: 100%;
+    margin-top: .25rem;
+    font-size: 80%;
+    color: #dc3545;
+}

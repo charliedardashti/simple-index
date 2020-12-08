@@ -8,6 +8,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -53,8 +55,8 @@ public class DocumentServiceImpl implements DocumentService {
             docListNew.add(doc);
         }
         LOG.info("old list size =" + docList.size() + " and new list size = " + docListNew.size());
-        LOG.info("old list first val= " + docList.get(0) + "old list last val = " + docList.get(docList.size() - 1));
-        LOG.info("new list first val= " + docListNew.get(0) + "new list last val = " + docListNew.get(docListNew.size() - 1));
+       /* LOG.info("old list first val= " + docList.get(0) + "old list last val = " + docList.get(docList.size() - 1));
+        LOG.info("new list first val= " + docListNew.get(0) + "new list last val = " + docListNew.get(docListNew.size() - 1));*/
         return docListNew;
     }
 

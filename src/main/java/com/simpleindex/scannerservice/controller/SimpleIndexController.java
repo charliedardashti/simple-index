@@ -1,5 +1,6 @@
 package com.simpleindex.scannerservice.controller;
 
+import com.simpleindex.scannerservice.model.Document;
 import com.simpleindex.scannerservice.model.DocumentBean;
 import com.simpleindex.scannerservice.service.DocumentService;
 import org.slf4j.Logger;
@@ -10,6 +11,10 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.List;
 
 @Controller()
 public class SimpleIndexController {
@@ -20,14 +25,14 @@ public class SimpleIndexController {
 
     @GetMapping("/")
     public String showForm(Model model) {
-       /* User user = new User();
-        model.addAttribute("user", user);
-
-        List<String> listProfession = Arrays.asList("Developer", "Tester", "Architect");
-        model.addAttribute("listProfession", listProfession);*/
-        DocumentBean document = new DocumentBean();
-        model.addAttribute("document", document);
-        return "simple-index";
+        LocalDate date = LocalDate.now();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        String startDate = date.format(formatter);
+        String endDate = date.plusDays(1).format(formatter);
+        List<Document> documents = documentService.getDocumentsFromDate(startDate, endDate);
+        model.addAttribute("gridVisiblity",documents.size()==0?false:true);
+        model.addAttribute("documents", documents);
+        return "document";
 
     }
 
@@ -39,6 +44,16 @@ public class SimpleIndexController {
         return "document";
     }
 
+    @GetMapping(value = "/filter")
+    public String filterGrid(Model model, @RequestParam String startDate, @RequestParam String endDate){
+        LOG.info("Startdate is "+startDate+" EndDate is "+ endDate);
+        List<Document> documents = documentService.getDocumentsFromDate(startDate, endDate);
+        boolean val = documents.size()==0?false:true;
+        LOG.info("alue is" + val);
+        model.addAttribute("gridVisiblity",val);
+        model.addAttribute("documents", documents);
+        return "document :: table";
+    }
    /* @GetMapping("/document/to/{toDate}/from/{fromDate}")
     public String document(Model model, @PathVariable("toDate") final String toDate, @PathVariable("fromDate") final String fromDate) {
         LOG.info("Retrieving all the records from Documents for toDate{}=, fromDate{}=", toDate, fromDate);
