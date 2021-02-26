@@ -10,8 +10,9 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 @Service("documentsService")
 public class DocumentServiceImpl implements DocumentService {
@@ -28,6 +29,8 @@ public class DocumentServiceImpl implements DocumentService {
     public List<Document> getDocumentsFromDate(String toDate, String fromDate) {
         List<Document> docListNew = new ArrayList<Document>();
         List<Document> docList = documentDao.getDocumentsFromDate(toDate, fromDate);
+        docList = getDuplicateInvoiceNumberCheck(docList);
+
         int prev = 0;
         int next = 0;
         for (Document doc : docList) {
@@ -55,9 +58,23 @@ public class DocumentServiceImpl implements DocumentService {
             docListNew.add(doc);
         }
         LOG.info("old list size =" + docList.size() + " and new list size = " + docListNew.size());
-       /* LOG.info("old list first val= " + docList.get(0) + "old list last val = " + docList.get(docList.size() - 1));
-        LOG.info("new list first val= " + docListNew.get(0) + "new list last val = " + docListNew.get(docListNew.size() - 1));*/
         return docListNew;
+
+    }
+
+    private List<Document> getDuplicateInvoiceNumberCheck(List<Document> docList) {
+        Set<String> duplicateInvoices = new HashSet<>();
+        Set<String> duplicateInvoiceSet = docList.stream()
+                .filter(n -> !duplicateInvoices.add(n.getInvoiceNumber())).map(document -> document.getInvoiceNumber()) // Set.add() returns false if the element was already in the set.
+                .collect(Collectors.toSet());
+
+        docList = docList.stream().map(document -> {
+            if (duplicateInvoiceSet.contains(document.getInvoiceNumber())) {
+                document.setMessage("Duplicate Invoice !");
+            }
+            return document;
+        }).collect(Collectors.toList());
+        return docList;
     }
 
     private void addMissingId(List<Document> missingDocList, int prev, int next, String fromDate) {
